@@ -1,0 +1,347 @@
+.color-picker-app {
+  width: 360px;
+  min-height: 400px;
+  background: #fff;
+  color: #333;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 标签页 */
+.tabs {
+  display: flex;
+  border-bottom: 2px solid #e0e0e0;
+  background: #f8f8f8;
+  flex-shrink: 0;
+}
+
+.tab {
+  flex: 1;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  transition: all 0.2s;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  text-align: center;
+}
+
+.tab:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.tab.active {
+  color: #646cff;
+  border-bottom-color: #646cff;
+}
+
+/* 标签页内容 */
+.picker-tab {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.favorites-tab {
+  padding: 20px;
+  padding-top: 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* 拾色器标签页 */
+.color-preview-section {
+  margin-bottom: 20px;
+}
+
+.color-preview-large {
+  width: 100%;
+  height: 120px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  border: 2px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.preview-color-code {
+  font-size: 28px;
+  font-weight: bold;
+  font-family: "Courier New", monospace;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  letter-spacing: 1px;
+}
+
+.color-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.pick-btn {
+  flex: 1;
+  padding: 12px;
+  background: #646cff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pick-btn:hover:not(:disabled) {
+  background: #535bf2;
+  transform: translateY(-1px);
+}
+
+.pick-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.favorite-btn {
+  width: 48px;
+  padding: 12px;
+  background: #fff;
+  color: #ffc107;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.favorite-btn:hover {
+  border-color: #ffc107;
+  transform: scale(1.1);
+}
+
+.favorite-btn:active {
+  transform: scale(0.95);
+}
+
+/* 颜色格式 */
+.color-formats {
+  margin-bottom: 16px;
+}
+
+.format-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  background: #f8f8f8;
+  border-radius: 8px;
+}
+
+.format-item:last-child {
+  margin-bottom: 0;
+}
+
+.format-label {
+  font-weight: 600;
+  font-size: 12px;
+  color: #666;
+  width: 50px;
+  flex-shrink: 0;
+}
+
+.format-value-row {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.format-input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  background: #fff;
+  min-width: 0;
+}
+
+.copy-btn-mini {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: #646cff;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.copy-btn-mini:hover {
+  background: #535bf2;
+  transform: scale(1.05);
+}
+
+.copy-btn-mini:active {
+  transform: scale(0.95);
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 80px 20px 60px;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 14px;
+  color: #888;
+}
+
+/* 颜色网格 */
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.color-grid-item {
+  background: #f8f8f8;
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.color-grid-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.color-swatch {
+  width: 100%;
+  height: 60px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  border: 2px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.color-code {
+  font-size: 11px;
+  font-family: "Courier New", monospace;
+  color: #666;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: rgba(255, 68, 68, 0.9);
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.remove-btn:hover {
+  background: #cc0000;
+  transform: scale(1.1);
+}
+
+/* 深色模式 */
+@media (prefers-color-scheme: dark) {
+  .color-picker-app {
+    background: #242424;
+    color: rgba(255, 255, 255, 0.87);
+  }
+
+  .tabs {
+    background: #1a1a1a;
+    border-bottom-color: #333;
+  }
+
+  .tab {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .tab:hover {
+    background: #2a2a2a;
+    color: rgba(255, 255, 255, 0.87);
+  }
+
+  .color-preview-large {
+    border-color: #444;
+  }
+
+  .favorite-btn {
+    background: #333;
+    border-color: #444;
+  }
+
+  .format-item {
+    background: #1a1a1a;
+  }
+
+  .format-label {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .format-input {
+    background: #2a2a2a;
+    border-color: #444;
+    color: rgba(255, 255, 255, 0.87);
+  }
+
+  .empty-text {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .color-grid-item {
+    background: #1a1a1a;
+  }
+
+  .color-swatch {
+    border-color: #444;
+  }
+
+  .color-code {
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
