@@ -5,11 +5,16 @@ export const useFavorites = () => {
   const [favorites, setFavorites] = useState<string[]>([]);
 
   const loadFavorites = useCallback(async () => {
-    const response = await browser.runtime.sendMessage({
-      type: MESSAGE_TYPES.GET_FAVORITES,
-    });
-    if (response?.favorites) {
-      setFavorites(response.favorites);
+    try {
+      const response = await browser.runtime.sendMessage({
+        type: MESSAGE_TYPES.GET_FAVORITES,
+      });
+      if (response?.favorites) {
+        setFavorites(response.favorites);
+      }
+    } catch (error) {
+      // Background script 可能未运行，使用空数组
+      setFavorites([]);
     }
   }, []);
 
@@ -31,11 +36,15 @@ export const useFavorites = () => {
   }, [favorites, loadFavorites]);
 
   const removeFavorite = useCallback(async (colorToRemove: string) => {
-    await browser.runtime.sendMessage({
-      type: MESSAGE_TYPES.REMOVE_FAVORITE,
-      color: colorToRemove,
-    });
-    await loadFavorites();
+    try {
+      await browser.runtime.sendMessage({
+        type: MESSAGE_TYPES.REMOVE_FAVORITE,
+        color: colorToRemove,
+      });
+      await loadFavorites();
+    } catch (error) {
+      // 静默处理错误
+    }
   }, [loadFavorites]);
 
   return {

@@ -8,6 +8,7 @@ export const STORAGE_KEYS = {
 export const MESSAGE_TYPES = {
   COLOR_PICKED: "colorPicked",
   COLOR_UPDATED: "colorUpdated",
+  PICKER_CANCELLED: "pickerCancelled",
   GET_COLOR: "getColor",
   GET_FAVORITES: "getFavorites",
   ADD_FAVORITE: "addFavorite",

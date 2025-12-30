@@ -7,6 +7,7 @@ export default defineBackground(() => {
   const MESSAGE_TYPES = {
     COLOR_PICKED: "colorPicked",
     COLOR_UPDATED: "colorUpdated",
+    PICKER_CANCELLED: "pickerCancelled",
     GET_COLOR: "getColor",
     GET_FAVORITES: "getFavorites",
     ADD_FAVORITE: "addFavorite",
@@ -19,7 +20,9 @@ export default defineBackground(() => {
     if (command === 'start-picker') {
       browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
         if (tabs[0]?.id) {
-          browser.tabs.sendMessage(tabs[0].id, { type: MESSAGE_TYPES.START_PICKER });
+          browser.tabs.sendMessage(tabs[0].id, { type: MESSAGE_TYPES.START_PICKER }).catch(() => {
+            // Content script 可能未注入，静默处理
+          });
         }
       });
     }
@@ -44,6 +47,14 @@ export default defineBackground(() => {
       browser.runtime.sendMessage({
         type: MESSAGE_TYPES.COLOR_UPDATED,
         color: message.color,
+      }).catch(() => {
+        // 如果没有 popup 打开，静默处理错误
+      });
+      return false;
+    } else if (message.type === MESSAGE_TYPES.PICKER_CANCELLED) {
+      // 通知 popup 拾色器已取消
+      browser.runtime.sendMessage({
+        type: MESSAGE_TYPES.PICKER_CANCELLED,
       }).catch(() => {
         // 如果没有 popup 打开，静默处理错误
       });

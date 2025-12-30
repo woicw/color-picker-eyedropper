@@ -5,9 +5,20 @@ export default defineContentScript({
 
     const MESSAGE_TYPES = {
       COLOR_PICKED: "colorPicked",
+      PICKER_CANCELLED: "pickerCancelled",
       START_PICKER: "startPicker",
       STOP_PICKER: "stopPicker",
     } as const;
+
+    const notifyCancelled = () => {
+      try {
+        browser.runtime.sendMessage({
+          type: MESSAGE_TYPES.PICKER_CANCELLED,
+        });
+      } catch (error) {
+        // Background script 可能未运行，静默处理
+      }
+    };
 
     const startPicker = async () => {
       if (isPickerActive) return;
@@ -25,15 +36,22 @@ export default defineContentScript({
         const result = await eyeDropper.open();
 
         if (result?.sRGBHex) {
-          await browser.runtime.sendMessage({
-            type: MESSAGE_TYPES.COLOR_PICKED,
-            color: result.sRGBHex,
-          });
+          try {
+            await browser.runtime.sendMessage({
+              type: MESSAGE_TYPES.COLOR_PICKED,
+              color: result.sRGBHex,
+            });
+          } catch (error) {
+            // Background script 可能未运行，静默处理
+          }
         }
       } catch (err) {
-        // 用户取消或出错，静默处理
-        if (err && (err as Error).name !== "AbortError") {
-          // 可以在这里添加错误处理逻辑
+        // EyeDropper API 在用户按 ESC 时会抛出 AbortError
+        // 其他错误也可能发生，统一处理为取消
+        const error = err as Error;
+        if (error.name === "AbortError" || error.name === "NotAllowedError") {
+          // 用户取消（ESC 键或权限拒绝），通知 background
+          notifyCancelled();
         }
       } finally {
         isPickerActive = false;
@@ -41,7 +59,10 @@ export default defineContentScript({
     };
 
     const stopPicker = () => {
-      isPickerActive = false;
+      if (isPickerActive) {
+        isPickerActive = false;
+        notifyCancelled();
+      }
     };
 
     browser.runtime.onMessage.addListener((message) => {

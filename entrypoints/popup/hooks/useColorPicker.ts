@@ -9,11 +9,15 @@ export const useColorPicker = () => {
 
   useEffect(() => {
     const loadColor = async () => {
-      const response = await browser.runtime.sendMessage({
-        type: MESSAGE_TYPES.GET_COLOR,
-      });
-      if (response?.color) {
-        setColor(response.color);
+      try {
+        const response = await browser.runtime.sendMessage({
+          type: MESSAGE_TYPES.GET_COLOR,
+        });
+        if (response?.color) {
+          setColor(response.color);
+        }
+      } catch (error) {
+        // Background script 可能未运行，使用默认颜色
       }
     };
 
@@ -24,6 +28,9 @@ export const useColorPicker = () => {
         setColor(message.color);
         setIsActive(false);
         navigator.clipboard.writeText(message.color).catch(() => {});
+      } else if (message.type === MESSAGE_TYPES.PICKER_CANCELLED) {
+        // 拾色器已取消，重置状态
+        setIsActive(false);
       }
     };
 
@@ -39,6 +46,9 @@ export const useColorPicker = () => {
       if (tabs[0]?.id) {
         browser.tabs.sendMessage(tabs[0].id, {
           type: MESSAGE_TYPES.START_PICKER,
+        }).catch((error) => {
+          // Content script 可能未注入，重置状态
+          setIsActive(false);
         });
       }
     });
@@ -50,6 +60,8 @@ export const useColorPicker = () => {
       if (tabs[0]?.id) {
         browser.tabs.sendMessage(tabs[0].id, {
           type: MESSAGE_TYPES.STOP_PICKER,
+        }).catch(() => {
+          // Content script 可能未注入，静默处理
         });
       }
     });
